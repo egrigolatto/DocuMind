@@ -1,0 +1,29 @@
+# Dependencias instaladas por pnpm (reproducibles desde pnpm-lock.yaml)
+node_modules/
+
+# Artefactos de build de Next.js
+.next/
+out/
+build/
+dist/
+
+# Cobertura de tests
+coverage/
+
+# Secretos: .env contiene la API key real; .env.example documenta las variables sin valores
+.env*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Cachés y temporales de TypeScript
+*.tsbuildinfo
+
+# Sistema operativo y editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
