@@ -21,6 +21,13 @@ pnpm-debug.log*
 
 # Cachés y temporales de TypeScript
 *.tsbuildinfo
+next-env.d.ts
+
+# Vercel
+.vercel
+
+# Certificados locales
+*.pem
 
 # Sistema operativo y editores
 .DS_Store

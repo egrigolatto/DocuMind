@@ -1,0 +1,27 @@
+name: documind
+
+services:
+  db:
+    image: pgvector/pgvector:0.8.7-pg18
+    container_name: documind-db
+    restart: unless-stopped
+    environment:
+      # Credenciales solo para desarrollo local; no usar en producción.
+      POSTGRES_USER: documind
+      POSTGRES_PASSWORD: documind
+      POSTGRES_DB: documind
+    ports:
+      - "5432:5432"
+    volumes:
+      # Postgres 18 cambió el layout: PGDATA=/var/lib/postgresql/18/docker y el
+      # volumen declarado por la imagen es /var/lib/postgresql (no .../data).
+      - documind_pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U documind -d documind"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  documind_pgdata:

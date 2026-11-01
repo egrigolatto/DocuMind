@@ -1,7 +1,7 @@
 # Plan de tareas — DocuMind
 
 > Última actualización: 2026-10-30
-> Estado general: **En curso** — Fase 0 (T0.1 completada; commit pendiente del owner)
+> Estado general: **En curso** — Fase 0 (T0.1–T0.3 completadas; commits y push a cargo del owner)
 
 ## Definición de terminado (aplica a cada tarea)
 
@@ -25,17 +25,19 @@ Una tarea está terminada cuando:
   - Nota de aprendizaje: qué fija cada archivo ignorado y por qué `.env.example` sí se versiona.
   - **Completada 2026-10-30** — verificado: `.env` ignorado (exit 0), `.env.example` versionable (exit 1), Node v24.13.0 con `.nvmrc` = 24. Commit inicial pendiente del owner.
 
-- [ ] T0.2 — Scaffold de Next.js y fijación de versiones
+- [x] T0.2 — Scaffold de Next.js y fijación de versiones
   - Objetivo: aplicación Next 16 con App Router, TypeScript, Tailwind y ESLint, usando pnpm; resolver P-02.
   - Componentes: `src/app/`, `tsconfig.json`, `next.config.ts`, configs de lint/tailwind.
   - Dependencias: T0.1.
   - Criterio de aceptación: `pnpm dev` sirve la página en `localhost:3000`; `pnpm build` pasa; versiones finales de Next/React/TypeScript anotadas en `docs/decisions.md` (cierre de P-02 y registro si hubo fallback de TS).
+  - **Completada 2026-10-30 (rama `develop`)** — scaffold generado en directorio temporal con `create-next-app@16.4.3` y trasladado sin tocar `docs/`. Verificado: `pnpm dev` → HTTP 200 en `localhost:3000`; `pnpm build` OK; `pnpm lint` OK; `pnpm exec tsc --noEmit` OK. TS 7.0.2 probado: build OK pero lint roto (`typescript-eslint` no soporta TS 7) → fallback a 5.9.3 y cierre de P-02 en **D-21**.
 
-- [ ] T0.3 — PostgreSQL + pgvector en Docker Compose
+- [x] T0.3 — PostgreSQL + pgvector en Docker Compose
   - Objetivo: base de datos reproducible local (RNF-03); resolver P-03.
   - Componentes: `docker-compose.yml`, volumen persistente, healthcheck, credenciales locales.
   - Dependencias: T0.1.
   - Criterio de aceptación: `docker compose up -d` deja Postgres saludable en el puerto configurado; `CREATE EXTENSION vector` funciona en el contenedor; tag exacto de la imagen registrado en `docs/decisions.md` (cierre de P-03).
+  - **Completada 2026-10-30 (rama `develop`)** — imagen `pgvector/pgvector:0.8.7-pg18` (PostgreSQL 18.6), puerto 5432, volumen `documind_pgdata`, healthcheck `pg_isready`. Verificado: estado `healthy`; extensión `vector 0.8.7` creada y operativa (`'[1,2,3]'::vector`, dimensión 3, distancia L2 = 1); `down` + `up` conserva el volumen. P-03 cerrada en **D-22**. La extensión se eliminó después de la prueba para que T1.3 migre sobre base vacía.
 
 - [ ] T0.4 — Variables de entorno y validación con Zod
   - Objetivo: configuración tipada y fail-fast (RNF-01).
@@ -153,4 +155,4 @@ Una tarea está terminada cuando:
 
 | Fecha | Tarea | Desviación | Decisión registrada |
 | --- | --- | --- | --- |
-| — | — | — | — |
+| 2026-10-30 | T0.2 | El trabajo se hace en la rama `develop` (rama de desarrollo) en lugar de una rama `feat/f0-...` | Confirmado por el owner: `develop` es la rama de desarrollo por ahora; **D-16** actualizada |

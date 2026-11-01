@@ -63,7 +63,7 @@ Experimento real: consulta directa a los endpoints públicos de OpenRouter y al 
 ## Entradas por fase
 
 ### F0 — Preparación del entorno
-**Estado: En curso** — T0.1 completada (ver N-02). Temas previstos para el cierre: contenedores e imágenes (qué es un tag y por qué fijamos uno), por qué un lockfile hace reproducible un proyecto, y el rol de una migración SQL versionada.
+**Estado: En curso** — T0.1–T0.3 completadas (ver N-02). Temas previstos para el cierre: contenedores e imágenes (qué es un tag y por qué fijamos uno), por qué un lockfile hace reproducible un proyecto, y el rol de una migración SQL versionada.
 
 ### F1 — Esquema de datos y pgvector
 **Estado: Pendiente** — temas previstos: el tipo `vector(N)` y qué significa que el espacio vectorial tenga N dimensiones; operadores de distancia en pgvector (`<->` euclídea, `<=>` distancia coseno, `<#>` producto punto **negativo** — ojo con el signo al leer resultados) y cuál usará DocuMind (`<=>`) y por qué la normalización hace que el ranking coseno y el euclídeo coincidan; el experimento del probe de dimensiones (P-01) con su resultado real.

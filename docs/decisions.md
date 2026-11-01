@@ -1,6 +1,6 @@
 # Registro de decisiones — DocuMind
 
-> Última actualización: 2026-10-29
+> Última actualización: 2026-10-30
 
 Convención de estados: **Confirmado** (aprobado por el usuario) · **Propuesto** (recomendación pendiente de aprobación) · **Pendiente** (sin resolver) · **Superado** (reemplazado por otra decisión, indicar cuál).
 
@@ -129,12 +129,12 @@ Este registro es un documento vivo: se actualiza durante todo el desarrollo, tam
 - **Consecuencias**: El log permite sumar costos por fase y auditar el free-tier; una feature "cuánto costó indexar este documento" requeriría volver ese log consultable por documento (columna o tabla `ai_calls`) — se decide solo si la feature se pide, hoy el log alcanza para RNF-07.
 
 ### D-16 — Proceso: Conventional Commits, ramas por fase/tarea, nada automático
-- **Fecha**: 2026-10-29
+- **Fecha**: 2026-10-29 · **Actualizada**: 2026-10-30
 - **Estado**: Confirmado
-- **Contexto**: El owner pidió buenas prácticas profesionales desde el inicio y vetó commits u operaciones destructivas automáticas.
-- **Decisión**: `main` + ramas `feat/fN-descripcion` o `docs/...`; mensajes bajo Conventional Commits; cada commit lo ejecuta el usuario tras revisar los cambios propuestos.
-- **Alternativas evaluadas**: Commit por cada tarea sin rama — descartada: dificulta retroceder por fase; trunk-based con CI — se considera en F8.
-- **Consecuencias**: Historial legible del proceso de aprendizaje (útil en portfolio); el agente nunca corre `git commit` sin pedido explícito.
+- **Contexto**: El owner pidió buenas prácticas profesionales desde el inicio y vetó commits u operaciones destructivas automáticas. El 2026-10-30 el owner definió que el desarrollo se integra en una rama `develop` (decisión explícita, por ahora).
+- **Decisión**: `main` queda como rama estable; `develop` es la rama de desarrollo donde se sube el trabajo en curso; las ramas de tarea (`feat/fN-descripcion`, `docs/...`) se crean desde `develop` y se fusionan ahí. Mensajes bajo Conventional Commits; cada commit y push lo ejecuta el usuario tras revisar los cambios propuestos.
+- **Alternativas evaluadas**: Commit por cada tarea sin rama — descartada: dificulta retroceder por fase; trunk-based con CI — se considera en F8; trabajar solo en `main` — descartada por el owner: quiere separar estable de desarrollo.
+- **Consecuencias**: Historial legible del proceso de aprendizaje (útil en portfolio); el agente nunca corre `git commit` ni `git push` sin pedido explícito. La política `develop` es revisable ("por ahora"): si se abandona, se registra acá con nueva fecha.
 
 ### D-17 — Inyección de prompts: riesgo aceptado y documentado en el MVP
 - **Fecha**: 2026-10-29
@@ -172,13 +172,29 @@ Este registro es un documento vivo: se actualiza durante todo el desarrollo, tam
 - **Alternativas evaluadas**: Desglose completo desde el día 1 — envejece mal y contradice la exploración progresiva; desarrollo vertical (un RAG mínimo end-to-end en semanas 1-2) — tentador pero mezcla cinco conceptos nuevos de golpe, contra el objetivo de comprensión.
 - **Consecuencias**: Cada fase produce algo verificable y una entrada en learning-notes; los pendientes técnicos (P-01…P-12) tienen fecha y fase de resolución asignada.
 
+### D-21 — Versiones finales del scaffold Next 16 y fallback de TypeScript (cierre de P-02)
+- **Fecha**: 2026-10-30
+- **Estado**: Confirmado
+- **Contexto**: T0.2. `create-next-app@16.4.3` se ejecutó en un directorio temporal y se trasladaron solo los artefactos del scaffold al repo, para no tocar la documentación existente. P-02 exigía verificar TypeScript 7.0.2 contra Next 16 y el toolchain de lint antes de fijar versiones.
+- **Decisión**: fijar **Next 16.4.3**, **React / React DOM 19.3.0**, **TypeScript 5.9.3**, **Tailwind CSS 4.3.3** (con `@tailwindcss/turbopack` 4.3.3), **ESLint 9.39.5** + `eslint-config-next` 16.4.3, `@types/node` 20.19.43, `@types/react` / `@types/react-dom` 19.3.0 y **pnpm 11.15.1** en `packageManager`.
+- **Verificación de TS 7.0.2 (P-02)**: con TS 7.0.2 instalado, `pnpm build` (Next 16 + Turbopack) **pasa**, pero `pnpm lint` **falla al arrancar**: `typescript-eslint@8.72.1` (dependencia de `eslint-config-next`) aborta con `typescript-eslint does not support TS 7.0` y declara peer `typescript >=4.8.4 <6.1.0`. Con TS 5.9.3, `build`, `lint` y `tsc --noEmit` pasan.
+- **Alternativas evaluadas**: TS 7.0.2 manteniendo el build pero sin lint — descartada: incumple la definición de terminado y deja el editor sin diagnósticos coherentes; TS 6.x — no existe línea publicada (el registro solo ofrece 5.9.3 estable y 7.x); por eso se aplica el fallback previsto en P-02 a la versión que fija `create-next-app`.
+- **Consecuencias**: `drizzle-kit` (T0.5) trabajará sobre TS 5.9.3, que cae dentro de los peers habituales; si en el futuro `typescript-eslint` soporta TS 7, se reevalúa con una nueva entrada. El scaffold habilita `cacheComponents` y `partialPrefetching` en `next.config.ts`; se mantienen los defaults y se revisan en F4 si complican los route handlers. `AGENTS.md` se versiona porque `next dev` lo regenera si falta. `@types/node` queda en 20 (default del scaffold) pese a correr Node 24: las APIs usadas en el MVP existen en ambos; se sube si aparece una API nueva.
+
+### D-22 — PostgreSQL + pgvector en Docker Compose (cierre de P-03)
+- **Fecha**: 2026-10-30
+- **Estado**: Confirmado
+- **Contexto**: T0.3. RNF-03 exige una base reproducible en local; P-03 pedía verificar el tag vigente de la imagen con pgvector.
+- **Decisión**: `docker compose` con un servicio `db` basado en **`pgvector/pgvector:0.8.7-pg18`** (pgvector 0.8.7 sobre PostgreSQL 18.6; digest `sha256:2358fcba361ed2233a5ed81b5fe4ca779ccb304120ce531a3bf51c0ed7e2bc11`). Contenedor `documind-db`, puerto host `5432`, usuario/base `documind` y contraseña `documind` (solo desarrollo local), volumen nombrado `documind_pgdata` y healthcheck con `pg_isready` (cada 5 s, 10 reintentos, `start_period` 10 s).
+- **Verificación**: `docker compose up -d` → estado `healthy`; `CREATE EXTENSION vector` → `0.8.7`; `'[1,2,3]'::vector` con dimensión 3 y distancia L2 `1` frente a `[1,2,4]`; `docker compose down` + `up` conserva la extensión en el volumen; `docker compose config` valida el archivo.
+- **Alternativas evaluadas**: `pgvector/pgvector:pg17` (tag de solo major) — descartada: al ser flotante puede cambiar de versión menor sin aviso; `postgres:17` + compilar/instalar pgvector en el contenedor — descartada: pasos frágiles y fuera del objetivo; PostgreSQL 16/17 — descartadas: 18 es la línea estable actual y ningún requisito ata el proyecto a 17.
+- **Consecuencias**: PostgreSQL 18 cambió el layout del volumen: `PGDATA=/var/lib/postgresql/18/docker` y la imagen declara el volumen en `/var/lib/postgresql` (no en `.../data`); el compose monta ahí. Cambiar de major de Postgres exige dump/restore o `pg_upgrade` (el volumen está atado a 18). Las credenciales son de desarrollo y `DATABASE_URL` (T0.4) debe coincidir. La extensión se creará desde la migración de T1.2/T1.3 con `CREATE EXTENSION IF NOT EXISTS vector` (idempotente), no desde un script de inicialización.
+
 ## Cuestiones pendientes
 
 | ID | Tema | Qué falta para resolverlo |
 | --- | --- | --- |
 | P-01 | Dimensiones reales del embedding `nvidia/nemotron-3.5-embed-1b:free` | Script probe contra `/api/v1/embeddings` con la API key del owner (primera tarea de F1, antes de fijar `vector(N)` en la migración) |
-| P-02 | Compatibilidad de TypeScript 7.0.2 con Next 16.4 y drizzle-kit 0.31 | Verificación en F0 contra el scaffold de create-next-app; registrar versión final fijada como nueva entrada D-xx |
-| P-03 | Tag vigente de la imagen Docker con pgvector incluido (`pgvector/pgvector:pg17` u otro) | Consulta a Docker Hub en F0; probar `docker compose up` y extensión disponible |
 | P-04 | Modelo default de chat en OpenRouter | Decidir en F6 con experimentos reales de calidad/costo sobre prompts típicos del MVP |
 | P-05 | Tamaño de chunk y porcentaje de overlap | Experimentos en F2 con documentos reales y métricas simples (chunks generados, tokens por chunk) |
 | P-06 | Valor de k y umbral de similitud para "sin información relevante" | Mediciones en F5/F6 con preguntas preparadas contra PDFs de prueba |

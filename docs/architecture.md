@@ -1,7 +1,7 @@
 # Arquitectura — DocuMind
 
-> Última actualización: 2026-10-29
-> Estado: Aprobado (estructura y componentes pendientes de materializar en la Fase 0)
+> Última actualización: 2026-10-30
+> Estado: En ejecución — Fase 0 (scaffold y configuración base materializados)
 
 ## Visión general
 
@@ -11,16 +11,16 @@ Este enfoque es apropiado porque el proyecto tiene doble objetivo (portfolio + a
 
 ## Stack tecnológico
 
-Versiones verificadas el 2026-10-29 en el registro de npm y en la API de OpenRouter. **No se asumen como definitivas:** en la Fase 0 se vuelven a verificar y se fijan vía lockfile de pnpm; cualquier diferencia se registra en `decisions.md`.
+Versiones re-verificadas el 2026-10-30 sobre el scaffold real (T0.2). Las dependencias de datos, IA y tests se confirman al instalarlas en T0.5. **No se asumen como definitivas:** se fijan vía lockfile de pnpm; cualquier diferencia se registra en `decisions.md`.
 
 | Capa | Tecnología | Versión verificada | Justificación | Estado |
 | --- | --- | --- | --- | --- |
-| Framework | Next.js (App Router) | 16.4.3 | Conocido por el desarrollador; un solo despliegue UI+API | Confirmado |
-| UI | React | 19.3.1 | Componentes; librería que el desarrollador domina | Confirmado |
-| Estilos | Tailwind CSS | 4.3.3 | Proviene del scaffold de Next; suficiente para una UI de una pantalla | Confirmado |
-| Lenguaje | TypeScript | 7.0.2 ⚠️ | Tipado estricto de pipeline y payloads externos. ⚠️ Línea muy reciente: verificar compatibilidad con Next 16 y drizzle-kit en F0; fallback a la versión que fije create-next-app (R-03, P-02) | Pendiente (verificar en F0) |
-| Paquetes | pnpm | 11.15.1 instalado localmente (el registro tiene 12.x) | Lockfile reproducible; fijar versión mayor a usar en F0 (`.nvmrc`/`packageManager`) | Confirmado (versión a fijar en F0) |
-| Base de datos | PostgreSQL + pgvector | tag de imagen por confirmar en F0 (P-03) | Datos relacionales y vectores en una sola tecnología | Confirmado |
+| Framework | Next.js (App Router) | 16.4.3 | Conocido por el desarrollador; un solo despliegue UI+API | Confirmado (fijada en D-21) |
+| UI | React | 19.3.0 | Componentes; librería que el desarrollador domina. El scaffold fija 19.3.0 (19.3.1 disponible en el registro) | Confirmado (D-21) |
+| Estilos | Tailwind CSS | 4.3.3 (`@tailwindcss/turbopack` 4.3.3) | Proviene del scaffold de Next 16; suficiente para una UI de una pantalla | Confirmado (D-21) |
+| Lenguaje | TypeScript | 5.9.3 | Tipado estricto de pipeline y payloads externos. Se probó TS 7.0.2: `next build` pasa, pero `pnpm lint` aborta porque `typescript-eslint` no soporta TS 7 → se aplica el fallback de P-02 a la versión del scaffold (D-21) | Confirmado (cierra P-02) |
+| Paquetes | pnpm | 11.15.1 | Lockfile reproducible; versión fijada en `packageManager` | Confirmado (D-21) |
+| Base de datos | PostgreSQL + pgvector | 0.8.7 sobre PostgreSQL 18.6 (`pgvector/pgvector:0.8.7-pg18`, D-22) | Datos relacionales y vectores en una sola tecnología | Confirmado (cierra P-03) |
 | Driver | node-postgres (`pg`) | 8.23.1 | Driver maduro y mínimo para Postgres | Confirmado |
 | ORM/migraciones | Drizzle ORM / drizzle-kit | 0.45.4 / 0.31.11 | Esquema tipado, migraciones SQL versionadas | Confirmado |
 | Validación | Zod | 4.6.7 | Env, uploads y respuestas externas validadas en bordes | Confirmado |
@@ -112,7 +112,7 @@ Ninguna otra integración en el MVP. Las llamadas son `fetch` directos con respu
 
 ## Estructura de carpetas
 
-Aprobada como diseño (D-19); **aún no creada** (se materializa en la Fase 0). Árbol **parcial**: muestra los archivos de autoría relevante; los generados por el scaffold y de configuración (`package.json`, `pnpm-lock.yaml`, `tsconfig.json`, `next.config.ts`, `eslint`/Tailwind configs, `vitest.config.ts`, `.nvmrc`, `.gitignore`) se fijan en F0.
+Estructura aprobada (D-19) y **en ejecución**: T0.2 ya creó el scaffold (`src/app`, `public/`, `package.json`, `tsconfig.json`, `next.config.ts`, `eslint.config.mjs`) y T0.3–T0.7 completan el resto de la Fase 0. Árbol **parcial**: muestra los archivos de autoría relevante; los generados por el scaffold y de configuración (`package.json`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `tsconfig.json`, `next.config.ts`, `eslint.config.mjs`, `.nvmrc`, `.gitignore`, `AGENTS.md`) se fijaron con sus versiones en D-21.
 
 ```text
 documind/

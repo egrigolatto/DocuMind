@@ -32,13 +32,13 @@ Cada tecnología con su justificación y alternativas evaluadas: [docs/architect
 ## Requisitos previos
 
 - Node.js 24.x (fijado en `.nvmrc` durante la Fase 0).
-- pnpm (versión a fijar en la Fase 0; instalada localmente 11.x).
+- pnpm 11.15.1 (fijada en `packageManager`).
 - Docker con Docker Compose.
 - Una cuenta y API key de [OpenRouter](https://openrouter.ai) (los embeddings elegidos son de un modelo gratuito; el modelo de chat se define con datos en la Fase 6).
 
 ## Instalación
 
-> ⚠️ **Pendiente de ejecutar:** el repositorio aún no está inicializado. Estos comandos corresponden a la Fase 0 aprobada y se verificarán/actualizarán al ejecutarla.
+> ⚠️ **Fase 0 en curso:** `pnpm install`, `pnpm dev` y `docker compose up -d` ya funcionan (T0.2–T0.3); `.env.example` y `pnpm db:migrate` se habilitan en T0.4–T0.5. Esta sección se actualiza al cerrar la fase (T0.7).
 
 ```bash
 pnpm install
@@ -59,7 +59,7 @@ Flujo previsto del MVP (disponible al completar las Fases 4 y 6):
 
 ## Estructura del proyecto
 
-Aún no creada. La estructura aprobada se documenta en [docs/architecture.md](docs/architecture.md#estructura-de-carpetas) y se materializa en la Fase 0.
+Entorno base en marcha (T0.2–T0.3): scaffold de Next 16 (`src/app/`, `public/` y configuraciones) y PostgreSQL + pgvector en `docker-compose.yml`. Los módulos de dominio (`src/modules/`, `src/components/`, `src/lib/`) se materializan en el resto de la Fase 0 y en F1. Árbol completo aprobado en [docs/architecture.md](docs/architecture.md#estructura-de-carpetas).
 
 ## Documentación
 
